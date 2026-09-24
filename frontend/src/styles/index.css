@@ -1,0 +1,150 @@
+/* Layer order matters: Ant Design sits below Tailwind's components/utilities,
+   so a Tailwind class on an antd element always wins without needing !important. */
+@layer theme, base, antd, components, utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Design tokens (switched by <html data-theme>) ---------- */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0a12;
+  --bg-2: #101019;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.075);
+  --border: rgba(255, 255, 255, 0.09);
+  --text: #ececf4;
+  --muted: #9b9bb0;
+  --accent: #8b7cff;
+  --accent-2: #22d3ee;
+  --grad: linear-gradient(135deg, #8b7cff 0%, #22d3ee 100%);
+  --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  --glass: rgba(16, 16, 25, 0.6);
+  --danger: #ff6b81;
+  --ok: #34d399;
+}
+
+[data-theme="light"] {
+  --bg: #f6f6fb;
+  --bg-2: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #ffffff;
+  --border: rgba(20, 20, 50, 0.09);
+  --text: #16162a;
+  --muted: #62627a;
+  --accent: #5b4bff;
+  --accent-2: #0891b2;
+  --grad: linear-gradient(135deg, #5b4bff 0%, #0891b2 100%);
+  --shadow: 0 20px 40px -24px rgba(40, 40, 100, 0.25);
+  --glass: rgba(255, 255, 255, 0.72);
+  --danger: #e11d48;
+  --ok: #059669;
+}
+
+/* Expose the tokens as Tailwind colors: bg-bg, text-fg, border-line, text-accent ... */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-line: var(--border);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent2: var(--accent-2);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --font-sans: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s, color 0.3s;
+  }
+  html[lang="en"] body {
+    font-family: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  }
+  h1, h2, h3, h4 {
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+/* ---------- Reusable building blocks ---------- */
+@utility container-x {
+  width: min(1120px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  transition: transform 0.3s var(--ease-out-expo), border-color 0.3s, box-shadow 0.3s;
+  &:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+}
+
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+@utility grad-bg {
+  background-image: var(--grad);
+}
+
+@utility grad-text {
+  background-image: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll reveal: Reveal.tsx adds .in when the element enters the viewport */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+  transition-delay: var(--delay, 0ms);
+  &.in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float {
+  50% { transform: translate(30px, 40px) scale(1.08); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@keyframes bob {
+  50% { transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { animation: none !important; }
+}
