@@ -74,18 +74,14 @@ export interface ContactPayload {
 }
 
 export interface SystemLink {
-  key: "site" | "api" | "admin" | "adminer";
-  url: string | null;
+  key: "site" | "api" | "admin";
+  url: string;
 }
 
 export interface SystemInfo {
   links: SystemLink[];
   database: {
     engine: string;
-    host: string | null;
-    port: string | null;
-    name: string;
-    user: string | null;
     ok: boolean;
     counts: {
       projects: number;

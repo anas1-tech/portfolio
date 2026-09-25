@@ -118,8 +118,14 @@ CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split("
 # Behind nginx / a TLS-terminating proxy
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# Where the Adminer database UI is reachable from the admin's browser (see the "tools" profile in docker-compose.yml)
-ADMINER_URL = os.getenv("ADMINER_URL", "http://localhost:8081")
+# Off by default (plain HTTP for local/Docker use). Set SECURE_SSL_REDIRECT=1 once TLS is terminated in
+# front of Django (e.g. via the optional Caddy "proxy" profile) so cookies and redirects require HTTPS.
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "0").strip().lower() in ("1", "true", "yes")
+SESSION_COOKIE_SECURE = SECURE_SSL_REDIRECT
+CSRF_COOKIE_SECURE = SECURE_SSL_REDIRECT
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", str(60 * 60 * 24 * 30 if SECURE_SSL_REDIRECT else 0)))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+SECURE_HSTS_PRELOAD = False
 
 # Contact form: set CONTACT_EMAIL to receive messages by email (plus SMTP settings).
 # Without SMTP config, emails are printed to the console and messages are still saved in the DB.

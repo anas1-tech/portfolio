@@ -7,15 +7,14 @@ import SystemModal from "./SystemModal";
 
 vi.mock("@/api/endpoints", () => ({ api: { system: vi.fn() } }));
 
-const info = (overrides: Partial<SystemInfo["database"]> = {}, adminer: string | null = "http://localhost:8081/?pgsql=db"): SystemInfo => ({
+const info = (overrides: Partial<SystemInfo["database"]> = {}): SystemInfo => ({
   links: [
     { key: "site", url: "http://localhost:8080/" },
     { key: "api", url: "http://localhost:8080/api/portfolio/" },
     { key: "admin", url: "http://localhost:8080/admin/" },
-    { key: "adminer", url: adminer },
   ],
   database: {
-    engine: "PostgreSQL", host: "db", port: "5432", name: "portfolio", user: "portfolio", ok: true,
+    engine: "PostgreSQL", ok: true,
     counts: { projects: 4, skills: 5, courses: 3, experiences: 3, messages: 2, unread_messages: 1 },
     ...overrides,
   },
@@ -31,7 +30,6 @@ describe("<SystemModal />", () => {
     renderWithProviders(<SystemModal onClose={() => undefined} />);
 
     expect(await screen.findByText("http://localhost:8080/admin/")).toBeInTheDocument();
-    expect(screen.getByText("http://localhost:8081/?pgsql=db")).toBeInTheDocument();
     expect(screen.getByText("PostgreSQL")).toBeInTheDocument();
     expect(screen.getByText("Connected")).toBeInTheDocument();
   });
@@ -42,12 +40,6 @@ describe("<SystemModal />", () => {
     await screen.findByText("PostgreSQL");
     expect(screen.queryByText(/^password$/i)).not.toBeInTheDocument();
     expect(screen.getByText(/never shown here/i)).toBeInTheDocument();
-  });
-
-  it("explains how to start Adminer when it is not running", async () => {
-    vi.mocked(api.system).mockResolvedValue(info({}, null));
-    renderWithProviders(<SystemModal onClose={() => undefined} />);
-    expect(await screen.findByText(/docker compose --profile tools up -d/)).toBeInTheDocument();
   });
 
   it("flags an unreachable database", async () => {

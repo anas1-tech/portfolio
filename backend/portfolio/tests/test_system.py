@@ -11,7 +11,7 @@ def test_system_info_lists_links_and_db_without_password(admin_client):
     res = admin_client.get("/api/system/")
     assert res.status_code == 200
     assert res.data["database"]["ok"] is True
-    assert {link["key"] for link in res.data["links"]} == {"site", "api", "admin", "adminer"}
+    assert {link["key"] for link in res.data["links"]} == {"site", "api", "admin"}
     assert "password" not in str(res.data).lower()
 
 

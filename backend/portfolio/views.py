@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth import authenticate
@@ -138,24 +137,15 @@ def system(request):
     except Exception:
         db_ok = False
 
-    adminer = None
-    if is_pg:
-        adminer = f"{settings.ADMINER_URL}/?pgsql={db['HOST']}&username={db['USER']}&db={db['NAME']}"
-
     return Response(
         {
             "links": [
                 {"key": "site", "url": site + "/"},
                 {"key": "api", "url": site + "/api/portfolio/"},
                 {"key": "admin", "url": site + "/admin/"},
-                {"key": "adminer", "url": adminer},
             ],
             "database": {
                 "engine": "PostgreSQL" if is_pg else "SQLite",
-                "host": db.get("HOST") or None,
-                "port": db.get("PORT") or None,
-                "name": db["NAME"] if is_pg else Path(str(db["NAME"])).name,
-                "user": db.get("USER") or None,
                 "ok": db_ok,
                 "counts": {
                     "projects": Project.objects.count(),

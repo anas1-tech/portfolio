@@ -40,7 +40,7 @@ export default function SystemModal({ onClose }: SystemModalProps) {
             items={info.links.map(({ key, url }) => ({
               key,
               label: t(`system.${key}`),
-              children: url ? (
+              children: (
                 <div className="flex items-center justify-between gap-2">
                   {/* antd Typography forces the page direction, so isolate the URL with <bdi> to keep it left-to-right */}
                   <Typography.Text code copyable={{ text: url }} className="break-all">
@@ -48,8 +48,6 @@ export default function SystemModal({ onClose }: SystemModalProps) {
                   </Typography.Text>
                   <Button size="small" shape="circle" icon={<ExportOutlined />} href={url} target="_blank" aria-label={t("system.open")} />
                 </div>
-              ) : (
-                <Typography.Text type="secondary">{t("system.adminerOff")}</Typography.Text>
               ),
             }))}
           />
@@ -66,13 +64,7 @@ export default function SystemModal({ onClose }: SystemModalProps) {
                   label: t("system.status"),
                   children: <Tag color={db.ok ? "success" : "error"}>{db.ok ? t("system.connected") : t("system.down")}</Tag>,
                 },
-                ...([
-                  ["engine", db.engine],
-                  ["host", db.host],
-                  ["port", db.port],
-                  ["name", db.name],
-                  ["user", db.user],
-                ] as const)
+                ...([["engine", db.engine]] as const)
                   .filter(([, value]) => value)
                   .map(([key, value]) => ({
                     key,

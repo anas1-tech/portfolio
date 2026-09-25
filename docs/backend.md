@@ -43,7 +43,8 @@ backend/
 | `MEDIA_ROOT` | where uploads are stored | `backend/media` |
 | `CONTACT_EMAIL` | also email contact messages here | off (messages are always saved) |
 | `EMAIL_HOST/PORT/HOST_USER/HOST_PASSWORD` | SMTP for that email | console backend |
-| `ADMINER_URL` | link shown in the System panel | `http://localhost:8081` |
+| `SECURE_SSL_REDIRECT` | `1`/`true`/`yes` to require HTTPS (redirect + secure cookies + HSTS) | off |
+| `SECURE_HSTS_SECONDS` | HSTS max-age once `SECURE_SSL_REDIRECT` is on | 30 days when on, `0` when off |
 
 ## Management commands
 

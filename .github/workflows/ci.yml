@@ -40,3 +40,41 @@ jobs:
         env:
           DJANGO_SECRET_KEY: ci
           POSTGRES_PASSWORD: ci
+      - name: Scan backend image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.29.0
+        continue-on-error: true
+        with:
+          image-ref: "portfolio:backend"
+          format: table
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+      - name: Scan frontend image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.29.0
+        continue-on-error: true
+        with:
+          image-ref: "portfolio:frontend"
+          format: table
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+
+  # Advisory dependency/CVE scanning. Never fails the workflow; reports go in the job logs for now.
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: pip-audit (backend)
+        continue-on-error: true
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt -r backend/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - name: npm audit (frontend)
+        continue-on-error: true
+        working-directory: frontend
+        run: |
+          npm ci
+          npm audit --omit=dev
