@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import parse_qs, unquote, urlparse
 
 from dotenv import load_dotenv
 
@@ -8,7 +9,9 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-insecure-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
+if os.getenv("VERCEL"):
+    ALLOWED_HOSTS.append(".vercel.app")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -54,8 +57,29 @@ TEMPLATES = [
     }
 ]
 
-# Postgres when POSTGRES_DB is set (Docker / production), SQLite otherwise (local dev).
-if os.getenv("POSTGRES_DB"):
+# Database: DATABASE_URL (Neon / Vercel) > POSTGRES_* (Docker) > SQLite (local dev).
+def _database_from_url(url):
+    parsed = urlparse(url)
+    query = {k: v[0] for k, v in parse_qs(parsed.query).items()}
+    options = {"sslmode": query.get("sslmode", "require")}
+    if "channel_binding" in query:
+        options["channel_binding"] = query["channel_binding"]
+    return {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": unquote(parsed.path.lstrip("/")),
+        "USER": unquote(parsed.username or ""),
+        "PASSWORD": unquote(parsed.password or ""),
+        "HOST": parsed.hostname or "",
+        "PORT": str(parsed.port or 5432),
+        "CONN_MAX_AGE": 0,  # serverless: don't hold connections open between invocations
+        "DISABLE_SERVER_SIDE_CURSORS": True,  # required behind Neon's pooled (pgbouncer) endpoint
+        "OPTIONS": options,
+    }
+
+
+if os.getenv("DATABASE_URL"):
+    DATABASES = {"default": _database_from_url(os.environ["DATABASE_URL"])}
+elif os.getenv("POSTGRES_DB"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -86,6 +110,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+WHITENOISE_USE_FINDERS = True  # serve admin/DRF static files without a collectstatic step (Vercel)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -112,7 +137,7 @@ LOGGING = {
     "loggers": {"django.request": {"handlers": ["console"], "level": "ERROR"}},
 }
 
-CORS_ALLOWED_ORIGINS =os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+CORS_ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
 CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o]
 
 # Behind nginx / a TLS-terminating proxy
