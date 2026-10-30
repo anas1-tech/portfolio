@@ -31,7 +31,7 @@ export default function About() {
           {pick(data.settings, "about_text")}
         </p>
         {facts.length > 0 && (
-          <dl className="grid content-start gap-8 bg-bg2 p-8 md:p-10" data-reveal style={{ "--i": 2 } as CSSProperties}>
+          <dl className="grid content-start gap-8 rounded-block bg-bg2/80 p-8 md:p-10" data-reveal style={{ "--i": 2 } as CSSProperties}>
             {facts.map((f) => (
               <div key={f.label}>
                 <dt className="text-muted">{f.label}</dt>

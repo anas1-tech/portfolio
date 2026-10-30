@@ -22,7 +22,7 @@ export default function Projects() {
   if (data.projects.length === 0 && !isAdmin) return null;
 
   const chip = (on: boolean) =>
-    `min-h-11 px-4 font-bold transition-colors ${on ? "bg-fg text-bg" : "bg-bg2 hover:bg-fg hover:text-bg"}`;
+    `min-h-11 rounded-full px-5 font-bold transition-colors ${on ? "bg-fg text-bg" : "bg-bg2 hover:bg-fg hover:text-bg"}`;
 
   return (
     <Section id="projects" title={t("projects.title")} action={<AddButton kind="project" />}>
@@ -50,7 +50,7 @@ export default function Projects() {
       <div className="grid gap-24">
         {visible.map((p, i) => (
           <article key={p.id} className="group grid items-center gap-8 lg:grid-cols-2 lg:gap-16" data-reveal style={{ "--i": 1 } as CSSProperties}>
-            <div className={`aspect-[16/10] overflow-hidden bg-bg2 ${i % 2 ? "lg:order-last" : ""}`}>
+            <div className={`aspect-[16/10] overflow-hidden rounded-block bg-bg2 ${i % 2 ? "lg:order-last" : ""}`}>
               {p.image ? (
                 <img
                   src={p.image}

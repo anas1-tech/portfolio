@@ -9,6 +9,7 @@ import Hero from "@/features/hero/Hero";
 import Projects from "@/features/projects/Projects";
 import Resume from "@/features/resume/Resume";
 import Skills from "@/features/skills/Skills";
+import { useLenis } from "@/hooks/useLenis";
 import { useReveal } from "@/hooks/useReveal";
 
 // The admin UI (and Ant Design with it) is only downloaded when someone opens the login form or signs in.
@@ -21,6 +22,7 @@ export default function App() {
   const { data, editor } = usePortfolio();
   const [showLogin, setShowLogin] = useState(false);
   useReveal(data);
+  useLenis();
 
   return (
     <>

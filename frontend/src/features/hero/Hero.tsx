@@ -20,7 +20,7 @@ export default function Hero() {
   const name = pick(settings, "hero_title");
 
   return (
-    <section id="hero" className="grid min-h-[calc(100svh-4rem)] lg:grid-cols-[1.15fr_1fr]">
+    <section id="hero" className="grid min-h-[calc(100svh-4.75rem)] lg:grid-cols-[1.15fr_1fr]">
       {/* Start padding matches .container-x, so the name lines up with every section below. */}
       <div className="flex flex-col justify-center gap-8 px-[clamp(1rem,4vw,2rem)] py-14 lg:ps-[max(2rem,calc((100vw-1320px)/2))] lg:pe-12">
         <h1 className="hero-in text-[clamp(3.25rem,8.4vw,8.5rem)] font-bold" style={delay(0)}>
@@ -43,7 +43,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative order-first min-h-[52svh] overflow-hidden bg-sand lg:order-none lg:min-h-0">
+      <div className="relative order-first m-3 min-h-[52svh] overflow-hidden rounded-block bg-sand lg:order-none lg:my-6 lg:ms-0 lg:me-6 lg:min-h-0">
         <img
           src="/profile.webp"
           srcSet="/profile-300.webp 300w, /profile.webp 590w"

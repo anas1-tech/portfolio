@@ -50,7 +50,7 @@ export default function ContactForm() {
     if (f in errors) setErrors((old) => ({ ...old, [f]: undefined }));
   };
 
-  const input = "w-full border-2 border-transparent bg-bg2 px-4 py-3 text-fg outline-none transition-colors focus:border-accent aria-[invalid=true]:border-danger";
+  const input = "w-full rounded-2xl border-2 border-transparent bg-bg2 px-5 py-3 text-fg outline-none transition-colors focus:border-accent aria-[invalid=true]:border-danger";
 
   const field = (f: Field, label: string, control: (props: object) => ReactNode) => {
     const err = errors[f];
@@ -78,7 +78,7 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative grid gap-6 bg-bg p-6 text-fg md:p-10" aria-label={t("nav.contact")}>
+    <form onSubmit={onSubmit} noValidate className="relative grid gap-6 rounded-block bg-bg p-6 text-fg md:p-10" aria-label={t("nav.contact")}>
       {field("name", t("contact.name"), (p) => <input {...p} maxLength={100} autoComplete="name" />)}
       {field("email", t("contact.emailField"), (p) => <input {...p} type="email" dir="ltr" autoComplete="email" />)}
       {field("message", t("contact.message"), (p) => <textarea {...p} rows={5} maxLength={3000} />)}

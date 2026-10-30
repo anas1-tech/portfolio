@@ -23,7 +23,7 @@ export default function Skills() {
           ))}
         </ul>
 
-        <div id="courses" className="self-start bg-sand p-8 text-sand-ink md:p-10" data-reveal style={{ "--i": 2 } as CSSProperties}>
+        <div id="courses" className="self-start rounded-block bg-sand p-8 text-sand-ink md:p-10" data-reveal style={{ "--i": 2 } as CSSProperties}>
           <div className="mb-8 flex items-center justify-between gap-4">
             <h3 className="text-2xl font-bold">{t("courses.title")}</h3>
             <AddButton kind="course" />

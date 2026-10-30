@@ -14,7 +14,7 @@ export default function Contact() {
   const time = useMakkahTime(lang);
 
   return (
-    <section id="contact" aria-labelledby="contact-title" className="bg-sand py-24 text-sand-ink md:py-40">
+    <section id="contact" aria-labelledby="contact-title" className="mx-3 rounded-block bg-sand py-24 text-sand-ink md:mx-6 md:py-40">
       <div className="container-x grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
         <div className="flex flex-col gap-8">
           <h2 id="contact-title" className="h-section" data-reveal>

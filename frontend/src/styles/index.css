@@ -7,6 +7,8 @@
 @import "@fontsource/ibm-plex-sans-arabic/400.css";
 @import "@fontsource/ibm-plex-sans-arabic/500.css";
 @import "@fontsource/ibm-plex-sans-arabic/700.css";
+/* Lenis smooth scrolling (see hooks/useLenis). */
+@import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -17,7 +19,8 @@
 [data-theme="light"] {
   --bg: #f3f2ef;
   --bg-2: #e7e4de;
-  --text: #15130f;
+  /* A softened ink rather than near-black: easier on the eyes over the light field. */
+  --text: #2b2721;
   --muted: #57524a;
   --accent: #0b6b4f;
   --accent-hover: #08573f;
@@ -30,7 +33,7 @@
 [data-theme="dark"] {
   --bg: #12110f;
   --bg-2: #1d1b18;
-  --text: #f1eee8;
+  --text: #e4dfd6;
   --muted: #aaa49a;
   --accent: #4cc79a;
   --accent-hover: #6fd6b0;
@@ -60,12 +63,14 @@
   --color-sand-ink: var(--sand-ink);
   --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  /* No hard corners anywhere: blocks use one soft radius (rounded-block), controls are pills. */
+  --radius-block: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px;
+    /* Smooth scrolling comes from Lenis; native smooth scroll would fight it. */
+    scroll-padding-top: 96px;
     color-scheme: light;
   }
   html[data-theme="dark"] {
@@ -113,14 +118,15 @@
   font-weight: 700;
 }
 
-/* Flat buttons, square corners, one fill. */
+/* Pill buttons, one fill. */
 @utility btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   min-height: 3rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
   font-weight: 700;
   transition: background-color 0.2s, transform 0.2s var(--ease-out-expo);
   &:active {
@@ -196,7 +202,6 @@ html[dir="rtl"] .link-grow {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation: none !important;
     transition-duration: 0.01ms !important;

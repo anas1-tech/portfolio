@@ -40,11 +40,15 @@ export default function Navbar() {
   }, [open]);
 
   const toggleLang = () => void i18n.changeLanguage(lang === "ar" ? "en" : "ar");
-  const iconBtn = "grid size-11 place-items-center transition-colors hover:bg-bg2 active:scale-95";
+  const iconBtn = "grid size-11 place-items-center rounded-full transition-colors hover:bg-bg2 active:scale-95";
 
   return (
-    <header className="sticky top-0 z-50 bg-bg">
-      <nav className="container-x flex h-16 items-center justify-between gap-6" aria-label={t("nav.menu")}>
+    // A floating pill rather than a full-width bar: no edges touch the sides of the window.
+    <header className="sticky top-3 z-50 container-x mt-3">
+      <nav
+        className="flex h-16 items-center justify-between gap-6 rounded-full bg-bg/85 ps-6 pe-2 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)] backdrop-blur-md"
+        aria-label={t("nav.menu")}
+      >
         <a href="#hero" className="text-lg font-bold whitespace-nowrap">
           {pick(data.settings, "hero_title")}
         </a>
@@ -55,7 +59,7 @@ export default function Navbar() {
               <a
                 href={`#${id}`}
                 aria-current={active === id ? "true" : undefined}
-                className={`block px-3 py-2 font-medium transition-colors ${active === id ? "text-accent" : "text-fg hover:text-accent"}`}
+                className={`block rounded-full px-4 py-2 font-medium transition-colors ${active === id ? "bg-accent/12 text-accent" : "text-fg hover:bg-bg2"}`}
               >
                 {t(`nav.${id}`)}
               </a>
@@ -64,7 +68,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-1">
-          <button type="button" onClick={toggleLang} lang={lang === "ar" ? "en" : "ar"} className="min-h-11 px-3 font-bold transition-colors hover:bg-bg2">
+          <button type="button" onClick={toggleLang} lang={lang === "ar" ? "en" : "ar"} className="min-h-11 rounded-full px-4 font-bold transition-colors hover:bg-bg2">
             {t("common.switchLang")}
           </button>
           <button type="button" onClick={toggleTheme} aria-label={theme === "dark" ? t("common.toLight") : t("common.toDark")} className={iconBtn}>
@@ -86,13 +90,13 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <ul id="mobile-menu" className="container-x grid pb-6 lg:hidden">
+        <ul id="mobile-menu" className="mt-2 grid rounded-block bg-bg/95 p-4 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)] backdrop-blur-md lg:hidden">
           {links.map((id) => (
             <li key={id}>
               <a
                 href={`#${id}`}
                 onClick={() => setOpen(false)}
-                className={`block py-3 text-2xl font-bold ${active === id ? "text-accent" : ""}`}
+                className={`block rounded-full px-4 py-3 text-2xl font-bold ${active === id ? "bg-accent/12 text-accent" : ""}`}
               >
                 {t(`nav.${id}`)}
               </a>
