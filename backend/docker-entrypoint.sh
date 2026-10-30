@@ -4,6 +4,9 @@ set -e
 # Named volumes are created root-owned. Fix that, then re-run this script as the unprivileged user.
 if [ "$(id -u)" = "0" ]; then
   chown app:app "$MEDIA_ROOT" 2>/dev/null || true
+  # setpriv keeps HOME=/root, and libpq then fails on the unreadable /root/.postgresql/postgresql.crt
+  # ("Permission denied") when connecting to Postgres. Point HOME at the app user's own directory.
+  export HOME=/home/app
   exec setpriv --reuid=app --regid=app --init-groups "$0" "$@"
 fi
 
