@@ -1,16 +1,10 @@
-# Render Blueprint: Postgres + Django API + React static site, all on free plans.
+# Render Blueprint: Django API + React static site, both on free plans. The database is on Neon (free).
 # Deploy: Render dashboard -> New -> Blueprint -> pick this repo. See docs/deployment.md.
 #
 # The site and the API share one address: the static site passes /api, /admin, /static and /media
 # through to the API, so the browser never makes a cross-origin call and no CORS setup is needed.
 # If Render gives a service a different URL than its name (the name was taken), update the
 # rewrite destinations and the *_ORIGINS / VITE_SITE_URL values below to match.
-
-databases:
-  - name: anas-portfolio-db
-    plan: free # deleted by Render after 30 days; upgrade in the dashboard to keep it
-    databaseName: portfolio
-    user: portfolio
 
 services:
   - type: web
@@ -41,17 +35,11 @@ services:
         value: /media
       - key: SEED_FILE
         value: seed/content.json
-      - key: POSTGRES_HOST
-        fromDatabase: { name: anas-portfolio-db, property: host }
-      - key: POSTGRES_PORT
-        fromDatabase: { name: anas-portfolio-db, property: port }
-      - key: POSTGRES_DB
-        fromDatabase: { name: anas-portfolio-db, property: database }
-      - key: POSTGRES_USER
-        fromDatabase: { name: anas-portfolio-db, property: user }
-      - key: POSTGRES_PASSWORD
-        fromDatabase: { name: anas-portfolio-db, property: password }
-      # Your admin login. Render asks for these when you create the Blueprint.
+      # Neon connection string (Neon console -> Connect -> pooled connection), e.g.
+      # postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # Your admin login. Render asks for these (and DATABASE_URL) when you create the Blueprint.
       - key: DJANGO_SUPERUSER_USERNAME
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD

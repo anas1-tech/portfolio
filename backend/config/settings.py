@@ -10,8 +10,6 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-insecure-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
-if os.getenv("VERCEL"):
-    ALLOWED_HOSTS.append(".vercel.app")
 # Render sets this to the service's own hostname (e.g. my-api.onrender.com).
 if os.getenv("RENDER_EXTERNAL_HOSTNAME"):
     ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
@@ -60,7 +58,7 @@ TEMPLATES = [
     }
 ]
 
-# Database: DATABASE_URL (Neon / Vercel) > POSTGRES_* (Docker) > SQLite (local dev).
+# Database: DATABASE_URL (Neon, used on Render) > POSTGRES_* (Docker) > SQLite (local dev).
 def _database_from_url(url):
     parsed = urlparse(url)
     query = {k: v[0] for k, v in parse_qs(parsed.query).items()}
@@ -74,7 +72,7 @@ def _database_from_url(url):
         "PASSWORD": unquote(parsed.password or ""),
         "HOST": parsed.hostname or "",
         "PORT": str(parsed.port or 5432),
-        "CONN_MAX_AGE": 0,  # serverless: don't hold connections open between invocations
+        "CONN_MAX_AGE": 0,  # Neon's pooler manages connections; don't hold them open between requests
         "DISABLE_SERVER_SIDE_CURSORS": True,  # required behind Neon's pooled (pgbouncer) endpoint
         "OPTIONS": options,
     }
@@ -113,7 +111,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-WHITENOISE_USE_FINDERS = True  # serve admin/DRF static files without a collectstatic step (Vercel)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
 # Let Django serve uploads itself where no nginx shares the media volume (e.g. on Render).
