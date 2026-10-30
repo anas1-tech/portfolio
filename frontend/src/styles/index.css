@@ -1,150 +1,208 @@
-/* Layer order matters: Ant Design sits below Tailwind's components/utilities,
+/* Layer order matters: Ant Design (admin only) sits below Tailwind's components/utilities,
    so a Tailwind class on an antd element always wins without needing !important. */
 @layer theme, base, antd, components, utilities;
 @import "tailwindcss";
 
+/* One self-hosted family for both languages: IBM Plex Sans Arabic ships Latin glyphs too. */
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/500.css";
+@import "@fontsource/ibm-plex-sans-arabic/700.css";
+
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* ---------- Design tokens (switched by <html data-theme>) ---------- */
+/* ---------- Design tokens (switched by <html data-theme>) ----------
+   The sand field is sampled from the portrait's own backdrop, so the photo sits in it seamlessly.
+   It stays the same in both themes: the hero and contact sections are always that colour. */
 :root,
-[data-theme="dark"] {
-  --bg: #0a0a12;
-  --bg-2: #101019;
-  --surface: rgba(255, 255, 255, 0.045);
-  --surface-hover: rgba(255, 255, 255, 0.075);
-  --border: rgba(255, 255, 255, 0.09);
-  --text: #ececf4;
-  --muted: #9b9bb0;
-  --accent: #8b7cff;
-  --accent-2: #22d3ee;
-  --grad: linear-gradient(135deg, #8b7cff 0%, #22d3ee 100%);
-  --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
-  --glass: rgba(16, 16, 25, 0.6);
-  --danger: #ff6b81;
-  --ok: #34d399;
-}
-
 [data-theme="light"] {
-  --bg: #f6f6fb;
-  --bg-2: #ffffff;
-  --surface: #ffffff;
-  --surface-hover: #ffffff;
-  --border: rgba(20, 20, 50, 0.09);
-  --text: #16162a;
-  --muted: #62627a;
-  --accent: #5b4bff;
-  --accent-2: #0891b2;
-  --grad: linear-gradient(135deg, #5b4bff 0%, #0891b2 100%);
-  --shadow: 0 20px 40px -24px rgba(40, 40, 100, 0.25);
-  --glass: rgba(255, 255, 255, 0.72);
-  --danger: #e11d48;
-  --ok: #059669;
+  --bg: #f3f2ef;
+  --bg-2: #e7e4de;
+  --text: #15130f;
+  --muted: #57524a;
+  --accent: #0b6b4f;
+  --accent-hover: #08573f;
+  --on-accent: #ffffff;
+  --danger: #b4232f;
+  --ok: #0b6b4f;
+  --field-line: rgba(21, 19, 15, 0.35);
 }
 
-/* Expose the tokens as Tailwind colors: bg-bg, text-fg, border-line, text-accent ... */
+[data-theme="dark"] {
+  --bg: #12110f;
+  --bg-2: #1d1b18;
+  --text: #f1eee8;
+  --muted: #aaa49a;
+  --accent: #4cc79a;
+  --accent-hover: #6fd6b0;
+  --on-accent: #08130e;
+  --danger: #ff8a8f;
+  --ok: #4cc79a;
+}
+
+:root {
+  --sand: #9e8a71;
+  --sand-ink: #15130f;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Expose the tokens as Tailwind colors: bg-bg, text-fg, bg-sand, text-accent ... */
 @theme inline {
   --color-bg: var(--bg);
   --color-bg2: var(--bg-2);
-  --color-surface: var(--surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-line: var(--border);
   --color-fg: var(--text);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --color-accent2: var(--accent-2);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
   --color-danger: var(--danger);
   --color-ok: var(--ok);
-  --font-sans: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --color-sand: var(--sand);
+  --color-sand-ink: var(--sand-ink);
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 90px;
+    scroll-padding-top: 80px;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
   }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.7;
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    transition: background 0.3s, color 0.3s;
   }
-  html[lang="en"] body {
-    font-family: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  h1, h2, h3 {
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
   }
-  h1, h2, h3, h4 {
-    line-height: 1.2;
-    letter-spacing: -0.01em;
+  /* Arabic letterforms need taller lines and no negative tracking (it breaks the joins). */
+  html[lang="ar"] :is(h1, h2, h3) {
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
   }
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 3px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 6px;
   }
 }
 
 /* ---------- Reusable building blocks ---------- */
 @utility container-x {
-  width: min(1120px, 100% - 2.5rem);
+  width: min(1320px, 100% - 2 * clamp(1rem, 4vw, 2rem));
   margin-inline: auto;
 }
 
-@utility card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  transition: transform 0.3s var(--ease-out-expo), border-color 0.3s, box-shadow 0.3s;
+/* Section headings: one size for every section, so the page has few sizes doing the work. */
+@utility h-section {
+  font-size: clamp(2.25rem, 5.2vw, 4.5rem);
+  font-weight: 700;
+}
+
+/* Flat buttons, square corners, one fill. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  transition: background-color 0.2s, transform 0.2s var(--ease-out-expo);
+  &:active {
+    transform: translateY(1px) scale(0.98);
+  }
+}
+
+@utility btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
   &:hover {
-    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: var(--accent-hover);
   }
 }
 
-@utility glass {
-  background: var(--glass);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+/* Underline that grows in on hover, for text links. */
+@utility link-grow {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s var(--ease-out-expo);
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 2px;
+  }
+}
+html[dir="rtl"] .link-grow {
+  background-position: 100% 100%;
 }
 
-@utility grad-bg {
-  background-image: var(--grad);
+@utility sr-only-x {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-@utility grad-text {
-  background-image: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* ---------- Motion ---------- */
+
+/* The hero's one orchestrated entrance on page load. */
+@utility hero-in {
+  animation: heroIn 0.8s var(--ease-out-expo) both;
+  animation-delay: var(--delay, 0ms);
 }
 
-/* Scroll reveal: Reveal.tsx adds .in when the element enters the viewport */
-@utility reveal {
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The portrait settles slowly into place. */
+@keyframes settle {
+  from { transform: scale(1.06); }
+  to { transform: none; }
+}
+
+/* Section parts rise in as they enter (see useReveal). Only hidden once the script has
+   switched motion on, so the content is never stuck invisible if it doesn't run. */
+.motion-on [data-reveal] {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
-  transition-delay: var(--delay, 0ms);
-  &.in {
-    opacity: 1;
-    transform: none;
-  }
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 80ms);
 }
-
-@keyframes float {
-  50% { transform: translate(30px, 40px) scale(1.08); }
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
-@keyframes bob {
-  50% { transform: translateY(6px); }
+.motion-on [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; transition: none; }
-  * { animation: none !important; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  .motion-on [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -4,9 +4,9 @@ A bilingual (Arabic RTL / English LTR) personal portfolio with an on-page admin.
 
 | | |
 |---|---|
-| **Frontend** | TypeScript, React, Vite, Tailwind CSS, Ant Design, Axios, i18next, ESLint, Vitest |
+| **Frontend** | TypeScript, React, Vite, Tailwind CSS, Axios, i18next, ESLint, Vitest (Ant Design in the admin UI only) |
 | **Backend** | Django, Django REST Framework, drf-spectacular, pytest |
-| **Ops** | Docker Compose (Postgres + gunicorn + nginx), GitHub Actions |
+| **Ops** | Docker Compose (Postgres + gunicorn + nginx), Render Blueprint (`render.yaml`), GitHub Actions |
 
 ```
 portfolio/
@@ -24,7 +24,7 @@ cp .env.example .env                 # set the secrets and admin password
 docker compose up -d --build
 ```
 
-Open http://localhost:8080. Sign in with the lock icon (credentials from `.env`). Once signed in you get edit/add/delete controls, a **Settings** editor, and a **Links** panel with the service URLs and database details.
+Open http://localhost:8080. Sign in with the **Sign in** link in the footer (credentials from `.env`). Once signed in you get edit/add/delete controls, a **Settings** editor, and a **Links** panel with the service URLs and database details.
 
 - Django admin (also where contact messages land): http://localhost:8080/admin/
 - API docs (sign in at `/admin/` first): http://localhost:8080/api/docs/

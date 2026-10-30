@@ -10,6 +10,11 @@ fi
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
+# Seed a brand-new database with the starter content (does nothing once there is any content)
+if [ -n "$SEED_FILE" ]; then
+  python manage.py import_legacy "$SEED_FILE" --if-empty
+fi
+
 # Create the admin user on first boot if credentials were provided
 if [ -n "$DJANGO_SUPERUSER_USERNAME" ] && [ -n "$DJANGO_SUPERUSER_PASSWORD" ]; then
   python manage.py createsuperuser --noinput --email "${DJANGO_SUPERUSER_EMAIL:-admin@example.com}" || true

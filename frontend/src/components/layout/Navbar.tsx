@@ -1,43 +1,61 @@
-import { GlobalOutlined, LockOutlined, MenuOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { Button, Drawer } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
+import { usePortfolio } from "@/context/PortfolioContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useLocalized } from "@/hooks/useLocalized";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
-export const SECTIONS = ["hero", "about", "resume", "skills", "courses", "projects", "contact"] as const;
+export const SECTIONS = ["hero", "about", "resume", "skills", "projects", "contact"] as const;
 
-interface NavbarProps {
-  onLogin: () => void;
-}
+const SunIcon = () => (
+  <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.5" />
+    <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+  </svg>
+);
+const MoonIcon = () => (
+  <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
+    <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z" />
+  </svg>
+);
 
-export default function Navbar({ onLogin }: NavbarProps) {
+export default function Navbar() {
   const { t, i18n } = useTranslation();
-  const { lang } = useLocalized();
+  const { lang, pick } = useLocalized();
   const { theme, toggle: toggleTheme } = useTheme();
   const { isAdmin } = useAuth();
+  const { data } = usePortfolio();
   const active = useScrollSpy(SECTIONS);
   const [open, setOpen] = useState(false);
 
+  // The projects link only appears once there is something to show (or for the admin, to add some).
+  const links = SECTIONS.filter((id) => id !== "hero" && (id !== "projects" || isAdmin || data.projects.length > 0));
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const toggleLang = () => void i18n.changeLanguage(lang === "ar" ? "en" : "ar");
+  const iconBtn = "grid size-11 place-items-center transition-colors hover:bg-bg2 active:scale-95";
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 p-3.5">
-      <nav className="glass pointer-events-auto mx-auto flex max-w-[1120px] items-center justify-between gap-4 rounded-full py-2 ps-5 pe-2">
-        <a href="#hero" className="text-xl font-extrabold tracking-wider" aria-label={t("nav.hero")}>
-          AB<span className="text-accent2">.</span>
+    <header className="sticky top-0 z-50 bg-bg">
+      <nav className="container-x flex h-16 items-center justify-between gap-6" aria-label={t("nav.menu")}>
+        <a href="#hero" className="text-lg font-bold whitespace-nowrap">
+          {pick(data.settings, "hero_title")}
         </a>
 
-        <ul className="hidden gap-0.5 md:flex">
-          {SECTIONS.map((id) => (
+        <ul className="hidden gap-1 lg:flex">
+          {links.map((id) => (
             <li key={id}>
               <a
                 href={`#${id}`}
-                className={`block rounded-full px-3.5 py-1.5 text-[0.92rem] font-medium transition ${
-                  active === id ? "bg-surface-hover text-fg" : "text-muted hover:text-fg"
-                }`}
+                aria-current={active === id ? "true" : undefined}
+                className={`block px-3 py-2 font-medium transition-colors ${active === id ? "text-accent" : "text-fg hover:text-accent"}`}
               >
                 {t(`nav.${id}`)}
               </a>
@@ -45,38 +63,43 @@ export default function Navbar({ onLogin }: NavbarProps) {
           ))}
         </ul>
 
-        <div className="flex items-center gap-1.5">
-          <Button shape="round" icon={<GlobalOutlined />} onClick={toggleLang} aria-label={t("common.language")}>
-            <b className="text-xs">{lang === "ar" ? "EN" : "ع"}</b>
-          </Button>
-          <Button
-            shape="circle"
-            icon={theme === "dark" ? <SunOutlined /> : <MoonOutlined />}
-            onClick={toggleTheme}
-            aria-label={t("common.theme")}
-          />
-          {!isAdmin && (
-            <Button type="text" shape="circle" icon={<LockOutlined />} onClick={onLogin} aria-label={t("auth.login")} />
-          )}
-          <Button className="md:!hidden" shape="circle" icon={<MenuOutlined />} onClick={() => setOpen(true)} aria-label={t("nav.menu")} />
+        <div className="flex items-center gap-1">
+          <button type="button" onClick={toggleLang} lang={lang === "ar" ? "en" : "ar"} className="min-h-11 px-3 font-bold transition-colors hover:bg-bg2">
+            {t("common.switchLang")}
+          </button>
+          <button type="button" onClick={toggleTheme} aria-label={theme === "dark" ? t("common.toLight") : t("common.toDark")} className={iconBtn}>
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+          </button>
+          <button
+            type="button"
+            className={`${iconBtn} lg:hidden`}
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? t("nav.close") : t("nav.menu")}
+          >
+            <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
+          </button>
         </div>
       </nav>
 
-      <Drawer placement="top" height={470} open={open} onClose={() => setOpen(false)} title={t("nav.menu")}>
-        <ul className="grid gap-1">
-          {SECTIONS.map((id) => (
+      {open && (
+        <ul id="mobile-menu" className="container-x grid pb-6 lg:hidden">
+          {links.map((id) => (
             <li key={id}>
               <a
                 href={`#${id}`}
                 onClick={() => setOpen(false)}
-                className={`block rounded-xl px-4 py-2.5 font-medium ${active === id ? "bg-surface-hover" : "text-muted"}`}
+                className={`block py-3 text-2xl font-bold ${active === id ? "text-accent" : ""}`}
               >
                 {t(`nav.${id}`)}
               </a>
             </li>
           ))}
         </ul>
-      </Drawer>
+      )}
     </header>
   );
 }

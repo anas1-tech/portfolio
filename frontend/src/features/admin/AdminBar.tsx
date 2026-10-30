@@ -17,7 +17,7 @@ export default function AdminBar() {
 
   return (
     <>
-      <div className="glass fixed inset-x-0 bottom-5 z-[60] mx-auto flex w-max max-w-[calc(100%-2rem)] gap-2 rounded-full p-2">
+      <div className="fixed inset-x-0 bottom-5 z-[60] mx-auto flex w-max max-w-[calc(100%-2rem)] gap-2 bg-bg2 p-2 shadow-2xl">
         <Button shape="round" icon={<SettingOutlined />} onClick={() => openEditor("settings")}>
           {t("admin.settings")}
         </Button>

@@ -43,3 +43,15 @@ def test_original_order_is_kept_regardless_of_export_order(legacy_file):
     call_command("import_legacy", legacy_file)
     # the export listed id 2 first; id 1 ("edu") must still be created first
     assert list(Experience.objects.order_by("id").values_list("type", flat=True)) == ["edu", "exp"]
+
+
+def test_if_empty_imports_into_an_empty_site(legacy_file):
+    call_command("import_legacy", legacy_file, if_empty=True)
+    assert Skill.objects.count() == 1
+
+
+def test_if_empty_leaves_existing_content_alone(legacy_file):
+    Skill.objects.create(name_ar="موجود")
+    call_command("import_legacy", legacy_file, if_empty=True)
+    assert list(Skill.objects.values_list("name_ar", flat=True)) == ["موجود"]
+    assert Experience.objects.count() == 0

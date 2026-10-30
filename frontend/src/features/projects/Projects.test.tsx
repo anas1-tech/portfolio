@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import { projectsFixture } from "@/test/fixtures";
 import { renderWithProviders } from "@/test/utils";
 import Projects from "./Projects";
+// Warm the lazily-loaded admin controls so the admin test does not wait on a cold import of antd.
+import "@/features/admin/AdminSlots";
 
 const titles = () => screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
 
@@ -52,10 +54,24 @@ describe("<Projects />", () => {
     expect(screen.getAllByRole("link", { name: /Live/ })).toHaveLength(1);
   });
 
-  it("shows the empty state, without filters, when there are no projects", () => {
+  it("hides the whole section from visitors when there are no projects", () => {
     renderWithProviders(<Projects />, { portfolio: { projects: [] } });
+    expect(screen.queryByRole("heading", { name: "Projects" })).not.toBeInTheDocument();
+  });
+
+  it("shows the admin an empty state, without filters, when there are no projects", () => {
+    renderWithProviders(<Projects />, { portfolio: { projects: [] }, isAdmin: true });
     expect(screen.getByText("No projects yet.")).toBeInTheDocument();
     expect(screen.queryByRole("group")).not.toBeInTheDocument();
+  });
+
+  it("marks the active filter as pressed", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Projects />, { portfolio: { projects: projectsFixture } });
+    const react = within(screen.getByRole("group", { name: "Filter projects by technology" })).getByRole("button", { name: "React" });
+    expect(react).toHaveAttribute("aria-pressed", "false");
+    await user.click(react);
+    expect(react).toHaveAttribute("aria-pressed", "true");
   });
 
   it("hides admin controls from visitors", () => {
@@ -64,10 +80,10 @@ describe("<Projects />", () => {
     expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
   });
 
-  it("shows add / edit / delete controls to the admin", () => {
+  it("shows add / edit / delete controls to the admin (loaded lazily)", async () => {
     renderWithProviders(<Projects />, { portfolio: { projects: projectsFixture }, isAdmin: true });
-    expect(screen.getByRole("button", { name: /Add/ })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Edit" })).toHaveLength(3);
+    expect(await screen.findByRole("button", { name: /Add/ })).toBeInTheDocument();
+    expect(await screen.findAllByRole("button", { name: "Edit" })).toHaveLength(3);
     expect(screen.getAllByRole("button", { name: "Delete" })).toHaveLength(3);
   });
 });

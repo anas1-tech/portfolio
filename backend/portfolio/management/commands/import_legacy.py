@@ -16,8 +16,17 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("json_file")
+        parser.add_argument(
+            "--if-empty",
+            action="store_true",
+            help="Do nothing if the site already has content (safe to run on every deploy).",
+        )
 
-    def handle(self, *args, json_file, **opts):
+    def handle(self, *args, json_file, if_empty=False, **opts):
+        if if_empty and self.has_content():
+            self.stdout.write("Content already present; nothing imported.")
+            return
+
         with open(json_file, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -28,3 +37,10 @@ class Command(BaseCommand):
             for row in sorted(data.get(key, []), key=lambda r: r.get("id", 0)):  # keep original order
                 model.objects.create(**pick(model, row))
             self.stdout.write(f"{key}: {len(data.get(key, []))} imported")
+
+    @staticmethod
+    def has_content():
+        settings = SiteSettings.objects.filter(pk=1).first()
+        return bool(settings and (settings.hero_title_ar or settings.hero_title_en)) or any(
+            model.objects.exists() for model in (Experience, Skill, Course, Project)
+        )

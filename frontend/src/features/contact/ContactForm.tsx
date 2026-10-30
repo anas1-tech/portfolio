@@ -1,24 +1,42 @@
-import { SendOutlined } from "@ant-design/icons";
-import { Alert, Button, Form, Input } from "antd";
-import { useState } from "react";
+import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/endpoints";
 import type { ContactPayload } from "@/types/api";
 
 type Status = "idle" | "sent" | "error";
+type Field = "name" | "email" | "message";
+
+const EMPTY: ContactPayload = { name: "", email: "", message: "", website: "" };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ContactForm() {
   const { t } = useTranslation();
-  const [form] = Form.useForm<ContactPayload>();
+  const id = useId();
+  const [values, setValues] = useState<ContactPayload>(EMPTY);
+  const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
-  const onFinish = async (values: ContactPayload) => {
+  const validate = (v: ContactPayload) => {
+    const next: Partial<Record<Field, string>> = {};
+    for (const f of ["name", "email", "message"] as const) if (!v[f].trim()) next[f] = t("contact.required");
+    if (!next.email && !EMAIL_RE.test(v.email.trim())) next.email = t("contact.invalidEmail");
+    return next;
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const found = validate(values);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      e.currentTarget.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+      return;
+    }
     setSending(true);
     setStatus("idle");
     try {
       await api.contact(values);
-      form.resetFields();
+      setValues(EMPTY);
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -27,31 +45,57 @@ export default function ContactForm() {
     }
   };
 
-  const required = { required: true, message: t("contact.required") };
+  const set = (f: keyof ContactPayload) => (e: { target: { value: string } }) => {
+    setValues((v) => ({ ...v, [f]: e.target.value }));
+    if (f in errors) setErrors((old) => ({ ...old, [f]: undefined }));
+  };
+
+  const input = "w-full border-2 border-transparent bg-bg2 px-4 py-3 text-fg outline-none transition-colors focus:border-accent aria-[invalid=true]:border-danger";
+
+  const field = (f: Field, label: string, control: (props: object) => ReactNode) => {
+    const err = errors[f];
+    return (
+      <div className="grid gap-2">
+        <label htmlFor={`${id}-${f}`} className="font-bold">
+          {label}
+        </label>
+        {control({
+          id: `${id}-${f}`,
+          name: f,
+          value: values[f],
+          onChange: set(f),
+          className: input,
+          "aria-invalid": err ? true : undefined,
+          "aria-describedby": err ? `${id}-${f}-err` : undefined,
+        })}
+        {err && (
+          <p id={`${id}-${f}-err`} className="text-sm font-medium text-danger">
+            {err}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} className="card p-6 md:p-8" aria-label={t("nav.contact")}>
-      <Form.Item name="name" label={t("contact.name")} rules={[required]}>
-        <Input maxLength={100} autoComplete="name" />
-      </Form.Item>
-      <Form.Item name="email" label={t("contact.emailField")} rules={[required, { type: "email", message: t("contact.invalidEmail") }]}>
-        <Input dir="ltr" autoComplete="email" />
-      </Form.Item>
-      <Form.Item name="message" label={t("contact.message")} rules={[required]}>
-        <Input.TextArea rows={5} maxLength={3000} showCount />
-      </Form.Item>
+    <form onSubmit={onSubmit} noValidate className="relative grid gap-6 bg-bg p-6 text-fg md:p-10" aria-label={t("nav.contact")}>
+      {field("name", t("contact.name"), (p) => <input {...p} maxLength={100} autoComplete="name" />)}
+      {field("email", t("contact.emailField"), (p) => <input {...p} type="email" dir="ltr" autoComplete="email" />)}
+      {field("message", t("contact.message"), (p) => <textarea {...p} rows={5} maxLength={3000} />)}
 
       {/* Honeypot: hidden from people, irresistible to bots. The backend drops anything that fills it. */}
-      <Form.Item name="website" className="absolute -start-[9999px] size-px overflow-hidden opacity-0" aria-hidden="true">
-        <Input tabIndex={-1} autoComplete="off" />
-      </Form.Item>
+      <div className="absolute -start-[9999px] size-px overflow-hidden" aria-hidden="true">
+        <input name="website" tabIndex={-1} autoComplete="off" value={values.website ?? ""} onChange={set("website")} />
+      </div>
 
-      <Button type="primary" htmlType="submit" size="large" shape="round" block icon={<SendOutlined />} loading={sending} className="grad-bg border-0">
-        {t("contact.send")}
-      </Button>
+      <button type="submit" disabled={sending} className="btn btn-primary w-full text-lg disabled:opacity-70">
+        {sending ? t("contact.sending") : t("contact.send")}
+      </button>
 
-      {status === "sent" && <Alert className="!mt-4" type="success" showIcon message={t("contact.sent")} />}
-      {status === "error" && <Alert className="!mt-4" type="error" showIcon message={t("contact.failed")} />}
-    </Form>
+      <div aria-live="polite">
+        {status === "sent" && <p className="font-bold text-ok">{t("contact.sent")}</p>}
+        {status === "error" && <p className="font-bold text-danger">{t("contact.failed")}</p>}
+      </div>
+    </form>
   );
 }

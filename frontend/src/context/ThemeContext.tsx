@@ -9,12 +9,15 @@ interface ThemeValue {
 
 const ThemeContext = createContext<ThemeValue | null>(null);
 
+/** The visitor's saved choice, else their system setting. public/boot.js applies the same rule before first paint. */
 const readSaved = (): Theme => {
   try {
-    return localStorage.getItem("theme") === "light" ? "light" : "dark";
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") return saved;
   } catch {
-    return "dark";
+    /* ignore */
   }
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

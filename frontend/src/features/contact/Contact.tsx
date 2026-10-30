@@ -1,45 +1,39 @@
-import { EnvironmentOutlined, MailOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
-import Reveal from "@/components/ui/Reveal";
 import SocialLinks from "@/components/ui/SocialLinks";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { useLocalized } from "@/hooks/useLocalized";
+import { useMakkahTime } from "@/hooks/useMakkahTime";
 import ContactForm from "./ContactForm";
 
+/** The sand field returns from the hero to close the page. */
 export default function Contact() {
   const { t } = useTranslation();
-  const { pick } = useLocalized();
+  const { lang } = useLocalized();
   const { settings } = usePortfolio().data;
-  const address = pick(settings, "address");
+  const time = useMakkahTime(lang);
 
   return (
-    <section id="contact" className="py-16 md:py-28">
-      <div className="container-x">
-        <Reveal className="grid gap-6 md:grid-cols-2">
-          <div className="grad-bg relative flex flex-col items-center justify-center gap-5 overflow-hidden rounded-[2rem] px-6 py-14 text-center text-white md:py-20">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.25),transparent_50%)]" />
-            <h2 className="relative text-[clamp(1.8rem,5vw,3rem)] font-extrabold">{t("contact.title")}</h2>
-            <p className="relative max-w-md opacity-90">{t("contact.text")}</p>
-            {address && (
-              <p className="relative inline-flex items-center gap-1.5">
-                <EnvironmentOutlined /> {address}
-              </p>
-            )}
-            {settings.email && (
-              <Button className="relative" size="large" shape="round" icon={<MailOutlined />} href={`mailto:${settings.email}`}>
-                {t("contact.email")}
-              </Button>
-            )}
-            <div className="relative">
-              <SocialLinks settings={settings} onGradient />
-            </div>
+    <section id="contact" aria-labelledby="contact-title" className="bg-sand py-24 text-sand-ink md:py-40">
+      <div className="container-x grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
+        <div className="flex flex-col gap-8">
+          <h2 id="contact-title" className="h-section" data-reveal>
+            {t("contact.title")}
+          </h2>
+          <p className="max-w-[30ch] text-[clamp(1.25rem,2vw,1.625rem)] leading-snug" data-reveal style={{ "--i": 1 } as CSSProperties}>
+            {t("contact.text")}
+          </p>
+          <p className="text-lg font-medium" aria-live="off" data-reveal style={{ "--i": 2 } as CSSProperties}>
+            {t("contact.localTime", { time })}
+          </p>
+          <div className="mt-auto" data-reveal style={{ "--i": 3 } as CSSProperties}>
+            <h3 className="mb-3 text-lg font-bold">{t("contact.direct")}</h3>
+            <SocialLinks settings={settings} />
           </div>
+        </div>
+        <div data-reveal style={{ "--i": 2 } as CSSProperties}>
           <ContactForm />
-        </Reveal>
-        <footer className="mt-12 text-center text-sm text-muted">
-          © {new Date().getFullYear()} {pick(settings, "hero_title")}
-        </footer>
+        </div>
       </div>
     </section>
   );

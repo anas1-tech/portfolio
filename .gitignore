@@ -6,3 +6,7 @@ __pycache__
 db.sqlite3
 media
 staticfiles
+.coverage
+.pytest_cache
+coverage
+.taste-skill

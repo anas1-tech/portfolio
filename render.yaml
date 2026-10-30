@@ -1,0 +1,98 @@
+# Render Blueprint: Postgres + Django API + React static site, all on free plans.
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo. See docs/deployment.md.
+#
+# The site and the API share one address: the static site passes /api, /admin, /static and /media
+# through to the API, so the browser never makes a cross-origin call and no CORS setup is needed.
+# If Render gives a service a different URL than its name (the name was taken), update the
+# rewrite destinations and the *_ORIGINS / VITE_SITE_URL values below to match.
+
+databases:
+  - name: anas-portfolio-db
+    plan: free # deleted by Render after 30 days; upgrade in the dashboard to keep it
+    databaseName: portfolio
+    user: portfolio
+
+services:
+  - type: web
+    name: anas-portfolio-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: anas-portfolio.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://anas-portfolio.onrender.com,https://anas-portfolio-api.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://anas-portfolio.onrender.com
+      - key: SECURE_SSL_REDIRECT
+        value: "1"
+      - key: SERVE_MEDIA
+        value: "1"
+      - key: MEDIA_ROOT
+        value: /media
+      - key: SEED_FILE
+        value: seed/content.json
+      - key: POSTGRES_HOST
+        fromDatabase: { name: anas-portfolio-db, property: host }
+      - key: POSTGRES_PORT
+        fromDatabase: { name: anas-portfolio-db, property: port }
+      - key: POSTGRES_DB
+        fromDatabase: { name: anas-portfolio-db, property: database }
+      - key: POSTGRES_USER
+        fromDatabase: { name: anas-portfolio-db, property: user }
+      - key: POSTGRES_PASSWORD
+        fromDatabase: { name: anas-portfolio-db, property: password }
+      # Your admin login. Render asks for these when you create the Blueprint.
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+
+  - type: web
+    name: anas-portfolio
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_SITE_URL
+        value: https://anas-portfolio.onrender.com
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      - { type: rewrite, source: /api/*, destination: https://anas-portfolio-api.onrender.com/api/* }
+      - { type: rewrite, source: /admin/*, destination: https://anas-portfolio-api.onrender.com/admin/* }
+      - { type: rewrite, source: /static/*, destination: https://anas-portfolio-api.onrender.com/static/* }
+      - { type: rewrite, source: /media/*, destination: https://anas-portfolio-api.onrender.com/media/* }
+      - { type: rewrite, source: /*, destination: /index.html }
+    headers:
+      # Same policy as frontend/security-headers.conf (used by the Docker image).
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: "camera=(), microphone=(), geolocation=()"
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

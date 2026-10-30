@@ -62,6 +62,22 @@ Docker Hub creates a **public** repository automatically if you push to a name t
 
 The images contain no secrets (configuration is injected at run time).
 
+## Deploy on Render (free)
+
+`render.yaml` at the repo root is a Render Blueprint: a Postgres database, the Django API (Docker) and the React site (static site). The site passes `/api`, `/admin`, `/static` and `/media` through to the API, so both live at one address.
+
+1. Push the repo to GitHub.
+2. In Render: **New → Blueprint**, pick the repo. Render asks for `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_PASSWORD` and `DJANGO_SUPERUSER_EMAIL` (your admin login).
+3. Wait for the three resources to deploy. On first start the API creates the admin user and fills the empty database from `backend/seed/content.json`.
+4. Open `https://anas-portfolio.onrender.com`.
+
+Things to know about the free plans:
+- The API sleeps after 15 minutes without traffic and takes about a minute to wake. Visitors don't notice: the page shows its built-in content (`frontend/src/content/fallback.json`) until the API answers.
+- **The free database is deleted after 30 days.** Upgrade it in the Render dashboard before then to keep anything you edited through the admin.
+- Uploaded project images are stored on the API's disk, which is wiped on every deploy. For permanent uploads, add a Render disk (paid) mounted at `/media`, or use object storage.
+- If a service name was taken and Render gave it a different URL, update the rewrite destinations and the `*_ORIGINS` / `VITE_SITE_URL` values in `render.yaml`.
+- `backend/seed/content.json` must stay identical to `frontend/src/content/fallback.json` (a frontend test checks this).
+
 ## Going live checklist
 
 - [ ] Strong values for every secret in `.env`; remove the sample admin password.

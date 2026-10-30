@@ -1,0 +1,51 @@
+{
+  "settings": {
+    "hero_title_ar": "أنس البرناوي",
+    "hero_title_en": "Anas Al-Barnawi",
+    "hero_subtitle_ar": "طالب علوم الحاسب والذكاء الاصطناعي في جامعة أم القرى بمكة المكرمة.",
+    "hero_subtitle_en": "Computer science and AI student at Umm Al-Qura University in Makkah.",
+    "about_text_ar": "طالب بكالوريوس في علوم الحاسب والذكاء الاصطناعي بجامعة أم القرى. أتميز بالمرونة والتكيّف والذكاء العاطفي، ولدي خبرة في قيادة الفرق وتوزيع المهام، وقدرة على التصرّف بفعالية تحت الضغط.",
+    "about_text_en": "I'm a bachelor's student in Computer Science and AI at Umm Al-Qura University. I bring flexibility, adaptability and emotional intelligence, plus hands-on experience leading teams and delegating work, and I stay effective under pressure.",
+    "address_ar": "مكة المكرمة",
+    "address_en": "Makkah, Saudi Arabia",
+    "email": "anasalbarnawi1@gmail.com",
+    "whatsapp": "966591014574",
+    "twitter": "",
+    "linkedin": "",
+    "github": ""
+  },
+  "experiences": [
+    {
+      "id": 1,
+      "type": "exp",
+      "title_ar": "مشرف استقبال وتوديع الحجاج",
+      "title_en": "Reception and Farewell Supervisor, Hajj season",
+      "place_ar": "هوليداي إن مكة",
+      "place_en": "Holiday Inn Makkah",
+      "date_ar": "أبريل – يوليو 2025",
+      "date_en": "Apr – Jul 2025"
+    },
+    {
+      "id": 2,
+      "type": "edu",
+      "title_ar": "بكالوريوس علوم الحاسب والذكاء الاصطناعي",
+      "title_en": "Bachelor of Computer Science and Artificial Intelligence",
+      "place_ar": "جامعة أم القرى، كلية الحاسبات",
+      "place_en": "Umm Al-Qura University, College of Computing",
+      "date_ar": "حالياً",
+      "date_en": "Now"
+    }
+  ],
+  "skills": [
+    { "id": 1, "name_ar": "القيادة وإدارة الفريق", "name_en": "Leadership and team management" },
+    { "id": 2, "name_ar": "التواصل الفعّال", "name_en": "Effective communication" },
+    { "id": 3, "name_ar": "الابتكار والإبداع", "name_en": "Innovation and creativity" },
+    { "id": 4, "name_ar": "العربية والإنجليزية", "name_en": "Arabic and English" }
+  ],
+  "courses": [
+    { "id": 1, "name_ar": "تصميم المحتوى الرقمي باستخدام الذكاء الاصطناعي", "name_en": "Digital content design with AI", "date_ar": "2025", "date_en": "2025" },
+    { "id": 2, "name_ar": "مهارات التحليل البياني بواسطة Excel", "name_en": "Excel chart analysis", "date_ar": "2025", "date_en": "2025" },
+    { "id": 3, "name_ar": "أساسيات Power BI لتحليل البيانات", "name_en": "Power BI data analysis fundamentals", "date_ar": "2025", "date_en": "2025" }
+  ],
+  "projects": []
+}

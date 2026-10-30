@@ -1,25 +1,58 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>أنس البرناوي | Anas Al-Brnawi</title>
-    <meta name="description" content="Portfolio of Anas Al-Brnawi: experience, skills, courses and projects. الموقع الشخصي لأنس البرناوي." />
-    <meta name="theme-color" content="#0a0a12" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="أنس البرناوي | Anas Al-Brnawi" />
-    <meta property="og:description" content="Portfolio: experience, skills, courses and projects." />
-    <meta property="og:image" content="/profile.jpeg" />
+    <title>أنس البرناوي | Anas Al-Barnawi</title>
+    <meta name="description" content="أنس البرناوي، طالب علوم الحاسب والذكاء الاصطناعي في جامعة أم القرى بمكة المكرمة. Anas Al-Barnawi, computer science and AI student at Umm Al-Qura University, Makkah." />
+    <meta name="theme-color" content="#9e8a71" />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <link rel="alternate" hreflang="ar" href="%SITE_URL%/" />
+    <link rel="alternate" hreflang="en" href="%SITE_URL%/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="%SITE_URL%/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:title" content="أنس البرناوي | Anas Al-Barnawi" />
+    <meta property="og:description" content="Computer science and AI student at Umm Al-Qura University, Makkah." />
+    <meta property="og:image" content="%SITE_URL%/profile.jpeg" />
+    <meta property="og:image:width" content="590" />
+    <meta property="og:image:height" content="693" />
+    <meta property="og:image:alt" content="Portrait of Anas Al-Barnawi" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Anas Al-Barnawi",
+        "alternateName": "أنس البرناوي",
+        "url": "%SITE_URL%/",
+        "image": "%SITE_URL%/profile.jpeg",
+        "jobTitle": "Computer Science and AI student",
+        "affiliation": { "@type": "CollegeOrUniversity", "name": "Umm Al-Qura University" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Makkah", "addressCountry": "SA" },
+        "knowsLanguage": ["ar", "en"]
+      }
+    </script>
+
+    <link rel="preload" as="image" href="/profile.webp" imagesrcset="/profile-300.webp 300w, /profile.webp 590w" imagesizes="(min-width: 1024px) 45vw, 100vw" fetchpriority="high" />
+    <!-- Sets theme and language before first paint, so there is no flash. External so the CSP can forbid inline scripts. -->
+    <script src="/boot.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app starts (and to anything that does not run JavaScript). React replaces it. -->
+      <main style="max-width: 60rem; margin: 0 auto; padding: 4rem 1.5rem; font-family: system-ui, sans-serif">
+        <h1>أنس البرناوي · Anas Al-Barnawi</h1>
+        <p>طالب علوم الحاسب والذكاء الاصطناعي في جامعة أم القرى بمكة المكرمة.</p>
+        <p lang="en" dir="ltr">Computer science and AI student at Umm Al-Qura University in Makkah.</p>
+        <p><a href="/cv-ar.pdf">السيرة الذاتية</a> · <a href="/cv-en.pdf" lang="en">CV (English)</a> · <a href="mailto:anasalbarnawi1@gmail.com">anasalbarnawi1@gmail.com</a></p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

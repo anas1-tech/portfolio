@@ -1,27 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-/** Adds the `in` class once the element scrolls into view (pairs with the `reveal` utility). */
-export function useReveal<T extends HTMLElement = HTMLDivElement>() {
-  const ref = useRef<T>(null);
+/**
+ * Lets every `[data-reveal]` element rise in once as it scrolls into view (styles in index.css).
+ * Motion is only switched on here, so without this script, or with reduced motion, content just shows.
+ * Re-runs when `key` changes so content that arrives later (the live API data) is picked up too.
+ */
+export function useReveal(key: unknown) {
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // No IntersectionObserver (old browsers, jsdom): just show the content.
-    if (typeof IntersectionObserver === "undefined") {
-      el.classList.add("in");
-      return;
-    }
+    if (typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    document.documentElement.classList.add("motion-on");
     const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          el.classList.add("in");
-          io.disconnect();
-        }
-      },
-      { threshold: 0.12 },
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-in");
+          io.unobserve(e.target);
+        }),
+      { rootMargin: "0px 0px -10% 0px" },
     );
-    io.observe(el);
+    document.querySelectorAll("[data-reveal]:not(.is-in)").forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
-  return ref;
+  }, [key]);
 }

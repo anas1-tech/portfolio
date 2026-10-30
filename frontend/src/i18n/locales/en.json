@@ -7,15 +7,39 @@
     "courses": "Courses",
     "projects": "Projects",
     "contact": "Contact",
-    "menu": "Menu"
+    "menu": "Menu",
+    "close": "Close menu"
   },
-  "hero": { "hello": "Hi, I'm", "cv": "Download CV", "contact": "Get in touch" },
-  "stats": { "projects": "Projects", "skills": "Skills", "courses": "Courses" },
-  "about": { "title": "About me" },
-  "resume": { "title": "Experience & Education", "experience": "Experience", "education": "Education" },
-  "skills": { "title": "Skills" },
-  "courses": { "title": "Courses" },
-  "projects": { "title": "Projects", "all": "All", "empty": "No projects yet.", "live": "Live", "code": "Code" },
+  "hero": {
+    "cv": "Download CV",
+    "contact": "Get in touch",
+    "photoAlt": "Portrait of {{name}}"
+  },
+  "about": {
+    "title": "About me",
+    "studying": "Studying",
+    "based": "Based in",
+    "reach": "Email"
+  },
+  "resume": {
+    "title": "Experience & Education",
+    "experience": "Experience",
+    "education": "Education"
+  },
+  "skills": {
+    "title": "Skills and courses"
+  },
+  "courses": {
+    "title": "Courses"
+  },
+  "projects": {
+    "title": "Projects",
+    "all": "All",
+    "empty": "No projects yet.",
+    "live": "Live",
+    "code": "Code",
+    "filter": "Filter projects by technology"
+  },
   "contact": {
     "title": "Let's work together",
     "text": "I'm happy to connect about any internship or job opportunity!",
@@ -27,7 +51,10 @@
     "sent": "Sent, thank you! I'll get back to you soon.",
     "failed": "Couldn't send. Please try again later.",
     "required": "This field is required",
-    "invalidEmail": "Enter a valid email address"
+    "invalidEmail": "Enter a valid email address",
+    "localTime": "It's {{time}} in Makkah right now.",
+    "direct": "Or reach me directly",
+    "sending": "Sending…"
   },
   "auth": {
     "login": "Sign in",
@@ -48,8 +75,9 @@
     "no": "No",
     "language": "Language",
     "theme": "Theme",
-    "serverDown": "Could not reach the server. Is the backend running?",
-    "retry": "Retry"
+    "switchLang": "العربية",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
   },
   "admin": {
     "settings": "Settings",
@@ -111,5 +139,9 @@
     "messages": "Contact messages",
     "unread": "unread",
     "loadFailed": "Could not load system info."
+  },
+  "footer": {
+    "thanks": "Thanks for stopping by.",
+    "top": "Back to top"
   }
 }
