@@ -13,42 +13,49 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ---------- Design tokens (switched by <html data-theme>) ----------
-   The sand field is sampled from the portrait's own backdrop, so the photo sits in it seamlessly.
-   It stays the same in both themes: the hero and contact sections are always that colour. */
+   Two printing inks on a neutral paper: cobalt is the main plate (actions, links, the contact block),
+   terracotta the accent plate (dates, the courses panel). Terracotta is used at a denser value
+   (#a84b28) wherever it carries text, since the base ink is too light for AA on paper.
+   The sand field is only the portrait's own backdrop, kept so the photo sits in it seamlessly. */
 :root,
 [data-theme="light"] {
-  --bg: #f3f2ef;
-  --bg-2: #e7e4de;
-  /* A softened ink rather than near-black: easier on the eyes over the light field. */
-  --text: #2b2721;
-  --muted: #57524a;
-  --accent: #0b6b4f;
-  --accent-hover: #08573f;
-  --on-accent: #ffffff;
+  --bg: #fafaf7;
+  --bg-2: #e9e9e5;
+  --text: #2a2d33;
+  --muted: #5b5f66;
+  --accent: #2148b8;
+  --accent-hover: #1a3a96;
+  --on-accent: #fafaf7;
+  --accent-2: #a84b28;
   --danger: #b4232f;
-  --ok: #0b6b4f;
-  --field-line: rgba(21, 19, 15, 0.35);
+  --ok: #2148b8;
+  --field-line: rgba(42, 45, 51, 0.35);
 }
 
 [data-theme="dark"] {
-  --bg: #12110f;
-  --bg-2: #1d1b18;
-  --text: #e4dfd6;
-  --muted: #aaa49a;
-  --accent: #4cc79a;
-  --accent-hover: #6fd6b0;
-  --on-accent: #08130e;
+  --bg: #14161c;
+  --bg-2: #1e2129;
+  --text: #e6e6e1;
+  --muted: #a3a7ae;
+  --accent: #8fa8f0;
+  --accent-hover: #aabdf4;
+  --on-accent: #0d1222;
+  --accent-2: #e8916c;
   --danger: #ff8a8f;
-  --ok: #4cc79a;
+  --ok: #8fa8f0;
 }
 
+/* Solid ink blocks: the same in both themes, like a printed plate. */
 :root {
+  --plate: #2148b8;
+  --on-plate: #fafaf7;
+  --plate-2: #a84b28;
+  --on-plate-2: #fafaf7;
   --sand: #9e8a71;
-  --sand-ink: #15130f;
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Expose the tokens as Tailwind colors: bg-bg, text-fg, bg-sand, text-accent ... */
+/* Expose the tokens as Tailwind colors: bg-bg, text-fg, bg-plate, text-accent ... */
 @theme inline {
   --color-bg: var(--bg);
   --color-bg2: var(--bg-2);
@@ -57,10 +64,14 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-on-accent: var(--on-accent);
+  --color-accent2: var(--accent-2);
   --color-danger: var(--danger);
   --color-ok: var(--ok);
+  --color-plate: var(--plate);
+  --color-on-plate: var(--on-plate);
+  --color-plate2: var(--plate-2);
+  --color-on-plate2: var(--on-plate-2);
   --color-sand: var(--sand);
-  --color-sand-ink: var(--sand-ink);
   --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   /* No hard corners anywhere: blocks use one soft radius (rounded-block), controls are pills. */

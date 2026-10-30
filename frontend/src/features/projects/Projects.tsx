@@ -60,7 +60,7 @@ export default function Projects() {
                   className="size-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
                 />
               ) : (
-                <div data-testid="project-placeholder" className="grid size-full place-items-center bg-sand text-[clamp(4rem,10vw,8rem)] font-bold text-sand-ink" aria-hidden="true">
+                <div data-testid="project-placeholder" className="grid size-full place-items-center bg-plate text-[clamp(4rem,10vw,8rem)] font-bold text-on-plate" aria-hidden="true">
                   {pick(p, "title").charAt(0)}
                 </div>
               )}

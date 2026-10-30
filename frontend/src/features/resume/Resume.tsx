@@ -25,7 +25,7 @@ function Group({ title, items }: { title: string; items: Experience[] }) {
               </div>
               {pick(e, "place") && <p className="mt-2 text-lg">{pick(e, "place")}</p>}
             </div>
-            {pick(e, "date") && <p className="text-lg font-medium text-muted tabular-nums sm:pt-2 sm:text-end">{pick(e, "date")}</p>}
+            {pick(e, "date") && <p className="text-lg font-medium text-accent2 tabular-nums sm:pt-2 sm:text-end">{pick(e, "date")}</p>}
           </li>
         ))}
       </ol>

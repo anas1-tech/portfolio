@@ -1,10 +1,10 @@
 import Grainient from "@/components/ui/Grainient/Grainient";
 import { useTheme } from "@/context/ThemeContext";
 
-// Sand, mint and apricot: the portrait's backdrop, the green accent and Makkah's evening light.
+// Paper with faint screens of the two inks: cobalt and terracotta.
 // Kept pale and close in value so the field is easy on the eyes; every stop keeps text at WCAG AA or better.
-const LIGHT = ["#f3f2ef", "#f1e6d2", "#d6ece0", "#f5e0cf", "#cde8da"];
-const DARK = ["#141311", "#14231d", "#241c15", "#132e25", "#2b2119"];
+const LIGHT = ["#fafaf7", "#e9e9e5", "#dfe6f7", "#f6e3da", "#e4eaf8"];
+const DARK = ["#14161c", "#171d2e", "#24191a", "#162036", "#1d1a22"];
 
 /**
  * A slow, softly grainy, living gradient fixed behind the whole page. It follows the pointer and swirls on click.

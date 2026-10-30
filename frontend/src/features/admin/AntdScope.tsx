@@ -25,7 +25,7 @@ export default function AntdScope({ children }: { children: ReactNode }) {
         theme={{
           algorithm: dark ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
           token: {
-            colorPrimary: dark ? "#4cc79a" : "#0b6b4f",
+            colorPrimary: dark ? "#8fa8f0" : "#2148b8",
             colorBgBase: dark ? "#12110f" : "#ffffff",
             borderRadius: 4,
             fontFamily: "inherit",
