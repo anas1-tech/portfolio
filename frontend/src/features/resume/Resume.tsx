@@ -39,7 +39,7 @@ export default function Resume() {
   const of = (type: Experience["type"]) => data.experiences.filter((e) => e.type === type);
 
   return (
-    <Section id="resume" title={t("resume.title")} action={<AddButton kind="experience" />} className="bg-bg2">
+    <Section id="resume" title={t("resume.title")} action={<AddButton kind="experience" />} className="bg-bg2/60">
       <div className="grid gap-20">
         <Group title={t("resume.experience")} items={of("exp")} />
         <Group title={t("resume.education")} items={of("edu")} />

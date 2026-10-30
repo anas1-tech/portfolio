@@ -13,6 +13,8 @@ import { useReveal } from "@/hooks/useReveal";
 
 // The admin UI (and Ant Design with it) is only downloaded when someone opens the login form or signs in.
 const AdminLayer = lazy(() => import("@/features/admin/AdminLayer"));
+// The animated background is decoration, so it loads after the content and never delays first paint.
+const PageBackground = lazy(() => import("@/components/ui/PageBackground"));
 
 export default function App() {
   const { isAdmin } = useAuth();
@@ -22,6 +24,9 @@ export default function App() {
 
   return (
     <>
+      <Suspense fallback={null}>
+        <PageBackground />
+      </Suspense>
       <Navbar />
       <main>
         <Hero />
