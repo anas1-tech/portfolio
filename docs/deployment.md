@@ -70,7 +70,7 @@ The images contain no secrets (configuration is injected at run time).
 2. Push the repo to GitHub.
 3. In Render: **New → Blueprint**, pick the repo. Render asks for `DATABASE_URL` (the Neon string) and `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_PASSWORD`, `DJANGO_SUPERUSER_EMAIL` (your admin login).
 4. Wait for the two services to deploy. On first start the API creates the admin user and fills the empty database from `backend/seed/content.json`.
-5. Open `https://anas-portfolio.onrender.com`.
+5. Open `https://anas-albarnawi-portfolio.onrender.com`.
 
 Things to know about the free plans:
 - The API sleeps after 15 minutes without traffic and takes about a minute to wake. Visitors don't notice: the page shows its built-in content (`frontend/src/content/fallback.json`) until the API answers.
