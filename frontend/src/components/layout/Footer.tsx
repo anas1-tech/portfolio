@@ -11,7 +11,7 @@ export default function Footer({ onLogin }: { onLogin: () => void }) {
   const name = pick(usePortfolio().data.settings, "hero_title");
 
   return (
-    <footer className="mx-3 mt-6 mb-3 rounded-block bg-fg pt-20 pb-10 text-bg md:mx-6 md:mb-6">
+    <footer className="mx-3 mt-6 mb-3 rounded-block bg-fg pt-20 pb-10 text-bg md:mx-6 md:mb-6 dark:bg-bg2 dark:text-fg">
       <div className="container-x grid gap-12">
         <p className="text-2xl font-bold">{t("footer.thanks")}</p>
         <p className="text-[clamp(3rem,11vw,10rem)] leading-none font-bold tracking-tight" aria-hidden="true">
