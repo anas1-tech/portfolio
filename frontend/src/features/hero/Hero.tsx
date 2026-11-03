@@ -31,7 +31,7 @@ export default function Hero() {
           {pick(settings, "hero_subtitle")}
         </p>
         <div className="hero-in flex flex-wrap items-center gap-x-8 gap-y-4" style={delay(240)}>
-          <a href={`/cv-${lang}.pdf`} download className="btn btn-primary text-lg">
+          <a href={`${import.meta.env.BASE_URL}cv-${lang}.pdf`} download className="btn btn-primary text-lg">
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
               <path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16" />
             </svg>
@@ -45,8 +45,8 @@ export default function Hero() {
 
       <div className="relative order-first m-3 min-h-[52svh] overflow-hidden rounded-block bg-sand lg:order-none lg:my-6 lg:ms-0 lg:me-6 lg:min-h-0">
         <img
-          src="/profile.webp"
-          srcSet="/profile-300.webp 300w, /profile.webp 590w"
+          src={`${import.meta.env.BASE_URL}profile.webp`}
+          srcSet={`${import.meta.env.BASE_URL}profile-300.webp 300w, ${import.meta.env.BASE_URL}profile.webp 590w`}
           sizes="(min-width: 1024px) 45vw, 100vw"
           width={590}
           height={693}

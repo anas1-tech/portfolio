@@ -26,7 +26,7 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: https://anas-albarnawi-portfolio.onrender.com,https://anas-portfolio-api.onrender.com
       - key: CORS_ALLOWED_ORIGINS
-        value: https://anas-albarnawi-portfolio.onrender.com
+        value: https://anas-albarnawi-portfolio.onrender.com,https://anas1-tech.github.io
       - key: SECURE_SSL_REDIRECT
         value: "1"
       - key: SERVE_MEDIA

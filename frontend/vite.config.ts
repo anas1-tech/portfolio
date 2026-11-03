@@ -42,6 +42,8 @@ export default defineConfig(({ mode }) => {
   const siteUrl = (env.VITE_SITE_URL || env.RENDER_EXTERNAL_URL || "http://localhost:5173").replace(/\/+$/, "");
 
   return {
+    // "/" on Render and Docker; "/portfolio/" on GitHub Pages (set by the Pages workflow).
+    base: env.VITE_BASE || "/",
     plugins: [react(), tailwindcss(), siteMeta(siteUrl)],
     resolve: {
       alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
